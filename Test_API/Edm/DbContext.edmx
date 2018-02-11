@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DBContext.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Login">
+          <Key>
+            <PropertyRef Name="Pk_Login_Id" />
+          </Key>
+          <Property Name="Pk_Login_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PasswordHash" Type="binary" MaxLength="64" Nullable="false" />
+          <Property Name="PasswordSalt" Type="uniqueidentifier" />
+          <Property Name="Fk_Person_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="Pk_Person_Id" />
+          </Key>
+          <Property Name="Pk_Person_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DateOfBirth" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Login__Fk_Person__47DBAE45">
+          <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+          <End Role="Login" Type="Self.Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="Pk_Person_Id" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="Fk_Person_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="IsValidUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="core" ReturnType="bit">
+          <Parameter Name="p_UserName" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_Password" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="RegisterUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="core">
+          <Parameter Name="p_UserName" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_Password" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_LastName" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_FirstName" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_DateOfBirth" Type="date" Mode="In" />
+          <Parameter Name="responseMessage" Type="nvarchar" Mode="InOut" />
+        </Function>
+        <EntityContainer Name="DBContextStoreContainer">
+          <EntitySet Name="Login" EntityType="Self.Login" Schema="core" store:Type="Tables" />
+          <EntitySet Name="Person" EntityType="Self.Person" Schema="core" store:Type="Tables" />
+          <AssociationSet Name="FK__Login__Fk_Person__47DBAE45" Association="Self.FK__Login__Fk_Person__47DBAE45">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Login" EntitySet="Login" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DBContext" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Logins" EntityType="DBContext.Login" />
+          <EntitySet Name="People" EntityType="DBContext.Person" />
+          <AssociationSet Name="FK__Login__Fk_Person__47DBAE45" Association="DBContext.FK__Login__Fk_Person__47DBAE45">
+            <End Role="Person" EntitySet="People" />
+            <End Role="Login" EntitySet="Logins" />
+          </AssociationSet>
+          <FunctionImport Name="RegisterUser">
+            <Parameter Name="p_UserName" Mode="In" Type="String" />
+            <Parameter Name="p_Password" Mode="In" Type="String" />
+            <Parameter Name="p_LastName" Mode="In" Type="String" />
+            <Parameter Name="p_FirstName" Mode="In" Type="String" />
+            <Parameter Name="p_DateOfBirth" Mode="In" Type="DateTime" />
+            <Parameter Name="responseMessage" Mode="InOut" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="Login">
+          <Key>
+            <PropertyRef Name="Pk_Login_Id" />
+          </Key>
+          <Property Name="Pk_Login_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordHash" Type="Binary" Nullable="false" MaxLength="64" FixedLength="true" />
+          <Property Name="PasswordSalt" Type="Guid" />
+          <Property Name="Fk_Person_Id" Type="Int32" />
+          <NavigationProperty Name="Person" Relationship="DBContext.FK__Login__Fk_Person__47DBAE45" FromRole="Login" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="Pk_Person_Id" />
+          </Key>
+          <Property Name="Pk_Person_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Logins" Relationship="DBContext.FK__Login__Fk_Person__47DBAE45" FromRole="Person" ToRole="Login" />
+        </EntityType>
+        <Association Name="FK__Login__Fk_Person__47DBAE45">
+          <End Type="DBContext.Person" Role="Person" Multiplicity="0..1" />
+          <End Type="DBContext.Login" Role="Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="Pk_Person_Id" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="Fk_Person_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DBContextStoreContainer" CdmEntityContainer="DBEntities">
+          <EntitySetMapping Name="Logins">
+            <EntityTypeMapping TypeName="DBContext.Login">
+              <MappingFragment StoreEntitySet="Login">
+                <ScalarProperty Name="Fk_Person_Id" ColumnName="Fk_Person_Id" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Pk_Login_Id" ColumnName="Pk_Login_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="People">
+            <EntityTypeMapping TypeName="DBContext.Person">
+              <MappingFragment StoreEntitySet="Person">
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Pk_Person_Id" ColumnName="Pk_Person_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="RegisterUser" FunctionName="DBContext.Store.RegisterUser" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
